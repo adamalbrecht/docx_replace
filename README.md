@@ -22,6 +22,7 @@ Or install it yourself as:
 
 Inside of a rails controller, your code might look something like this:
 
+```ruby
     def user_report
       @user = User.find(params[:user_id])
 
@@ -44,6 +45,7 @@ Inside of a rails controller, your code might look something like this:
         end
       end
     end
+```
 
 
 ## Contributing
