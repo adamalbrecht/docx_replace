@@ -10,8 +10,12 @@ module DocxReplace
       read_docx_file
     end
 
-    def replace(pattern, replacement)
-      @document_content.sub!(pattern, replacement)
+    def replace(pattern, replacement, multiple_occurrences=false)
+      if multiple_occurrences
+        @document_content.gsub!(pattern, replacement)
+      else
+        @document_content.sub!(pattern, replacement)
+      end
     end
 
     def commit(new_path=nil)
