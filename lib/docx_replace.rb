@@ -18,6 +18,17 @@ module DocxReplace
       end
     end
 
+    def matches(pattern)
+      @document_content.scan(pattern).map{|match| match.first}
+    end
+
+    def unique_matches(pattern)
+      matches(pattern)
+    end
+
+    alias_method :uniq_matches, :unique_matches
+
+
     def commit(new_path=nil)
       write_back_to_file(new_path)
     end
