@@ -37,7 +37,7 @@ def user_report
       doc.replace("$user_bio$", @user.bio)
       
       # Write the document back to a temporary file
-      tmp_file = TempFile.new('word_tempate', "#{Rails.root}/tmp")
+      tmp_file = Tempfile.new('word_tempate', "#{Rails.root}/tmp")
       doc.commit(tmp_file)
 
       # Respond to the request by sending the temp file
