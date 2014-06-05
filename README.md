@@ -20,7 +20,7 @@ Or install it yourself as:
 
 ## Usage
 
-Inside of a rails controller, your code might look something like this:
+Inside of a rails controller, your code might look something like this (although I would recommend extracting most of this into a separate class):
 
 ```ruby
 def user_report
@@ -37,7 +37,7 @@ def user_report
       doc.replace("$user_bio$", @user.bio)
       
       # Write the document back to a temporary file
-      tmp_file = TempFile.new('word_tempate', "#{Rails.root}/tmp")
+      tmp_file = Tempfile.new('word_tempate', "#{Rails.root}/tmp")
       doc.commit(tmp_file)
 
       # Respond to the request by sending the temp file
