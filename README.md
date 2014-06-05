@@ -47,6 +47,25 @@ def user_report
 end
 ```
 
+add "docx" type respond  to the config/initializers/mime_types.rb :
+
+```ruby
+Mime::Type.register "application/vnd.openxmlformats-officedocument.wordprocessingml.document", :docx
+```
+
+add link to the view
+
+```ruby
+<%= link_to 'get report', user_report_path(user, format: :docx) %>
+```
+
+add route
+
+```ruby
+  resources :users do
+    get 'user_report', as: :report
+  end
+```
 
 ## Contributing
 
