@@ -1,3 +1,5 @@
+# encoding: UTF-8
+
 require "docx_replace/version"
 require 'zip'
 require 'tempfile'
@@ -12,9 +14,9 @@ module DocxReplace
 
     def replace(pattern, replacement, multiple_occurrences=false)
       if multiple_occurrences
-        @document_content.gsub!(pattern, replacement)
+        @document_content.force_encoding("UTF-8").gsub!(pattern, replacement)
       else
-        @document_content.sub!(pattern, replacement)
+        @document_content.force_encoding("UTF-8").sub!(pattern, replacement)
       end
     end
 
