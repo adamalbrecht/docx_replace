@@ -38,7 +38,7 @@ def user_report
       
       # Write the document back to a temporary file
       tmp_file = Tempfile.new('word_tempate', "#{Rails.root}/tmp")
-      doc.commit(tmp_file)
+      doc.commit(tmp_file.path)
 
       # Respond to the request by sending the temp file
       send_file tmp_file.path, filename: "user_#{@user.id}_report.docx", disposition: 'attachment'
