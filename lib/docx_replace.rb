@@ -6,6 +6,8 @@ require 'tempfile'
 
 module DocxReplace
   class Doc
+    attr_reader :document_content
+
     def initialize(path, temp_dir=nil)
       @zip_file = Zip::File.new(path)
       @temp_dir = temp_dir
