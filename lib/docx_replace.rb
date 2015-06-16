@@ -23,12 +23,16 @@ module DocxReplace
       end
     end
 
-    def matches(pattern)
-      @document_content.scan(pattern).map{|match| match.first}
+    def matches(pattern, unique = false)
+      if unique
+        @document_content.scan(pattern).map{|match| match.first}
+      else
+        @document_content.scan(pattern).flatten.inject(Hash.new(0)) { |hash, key| hash[key] += 1; hash }
+      end
     end
 
     def unique_matches(pattern)
-      matches(pattern)
+      matches(pattern, true)
     end
 
     alias_method :uniq_matches, :unique_matches
