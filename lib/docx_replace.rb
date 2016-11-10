@@ -15,7 +15,7 @@ module DocxReplace
     end
 
     def replace(pattern, replacement, multiple_occurrences=false)
-      replace = replacement.to_s
+      replace = replacement.to_s.encode(xml: :text)
       if multiple_occurrences
         @document_content.force_encoding("UTF-8").gsub!(pattern, replace)
       else
