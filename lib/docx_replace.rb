@@ -2,15 +2,14 @@
 
 require "docx_replace/version"
 require 'zip'
-require 'tempfile'
 
 module DocxReplace
   class Doc
-    attr_reader :document_content
+    attr_reader :document_content, :entries
 
-    def initialize(path, temp_dir=nil)
-      @zip_file = Zip::File.new(path)
-      @temp_dir = temp_dir
+    def initialize(stream)
+      @stream = stream
+      @entries = []
       read_docx_file
     end
 
@@ -33,29 +32,32 @@ module DocxReplace
 
     alias_method :uniq_matches, :unique_matches
 
-
-    def commit(new_path=nil)
-      write_back_to_file(new_path)
+    def commit
+      write_back_to_file
     end
 
     private
     DOCUMENT_FILE_PATH = 'word/document.xml'
 
     def read_docx_file
-      @document_content = @zip_file.read(DOCUMENT_FILE_PATH)
+      Zip::InputStream.open(StringIO.new(@stream)) do |io|
+        while entry = io.get_next_entry
+          obj = {name: entry.name, content: io.read}
+          @entries << obj
+
+          if entry.name == DOCUMENT_FILE_PATH
+            @document_content = obj[:content]
+          end
+        end
+      end
     end
 
-    def write_back_to_file(new_path=nil)
-      if @temp_dir.nil?
-        temp_file = Tempfile.new('docxedit-')
-      else
-        temp_file = Tempfile.new('docxedit-', @temp_dir)
-      end
-      Zip::OutputStream.open(temp_file.path) do |zos|
-        @zip_file.entries.each do |e|
-          unless e.name == DOCUMENT_FILE_PATH
-            zos.put_next_entry(e.name)
-            zos.print e.get_input_stream.read
+    def write_back_to_file
+      compressed_filestream = Zip::OutputStream.write_buffer do |zos|
+        @entries.each do |entry|
+          unless entry[:name] == DOCUMENT_FILE_PATH
+            zos.put_next_entry(entry[:name])
+            zos.print entry[:content]
           end
         end
 
@@ -63,14 +65,7 @@ module DocxReplace
         zos.print @document_content
       end
 
-      if new_path.nil?
-        path = @zip_file.name
-        FileUtils.rm(path)
-      else
-        path = new_path
-      end
-      FileUtils.mv(temp_file.path, path)
-      @zip_file = Zip::File.new(path)
+      compressed_filestream.string
     end
   end
 end
