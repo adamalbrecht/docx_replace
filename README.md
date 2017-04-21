@@ -6,9 +6,9 @@ meant to be simple and feature-light.
 
 ## Installation
 
-Add this line to your application's Gemfile:
+Add this line to your application's Gemfile, specifying the @beechnut fork:
 
-    gem 'docx_replace'
+    gem 'docx_replace', git: "git://github.com/beechnut/docx_replace.git"
 
 And then execute:
 
