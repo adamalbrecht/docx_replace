@@ -19,12 +19,12 @@ module DocxReplace
     def replace(pattern, replacement, multiple_occurrences=false)
       replace = replacement.to_s
       if multiple_occurrences
-        @document_contents.each do |content|
-          content.force_encoding("UTF-8").gsub!(pattern, replace)
+        @document_contents.keys.each do |name|
+          @document_contents[name].force_encoding("UTF-8").gsub!(pattern, replace)
         end
       else
-        @document_contents.each do |content|
-          content.force_encoding("UTF-8").sub!(pattern, replace)
+        @document_contents.keys.each do |name|
+          @document_contents[name].force_encoding("UTF-8").sub!(pattern, replace)
         end
       end
     end
