@@ -35,7 +35,10 @@ def user_report
       doc.replace("$first_name$", @user.first_name)
       doc.replace("$last_name$", @user.last_name)
       doc.replace("$user_bio$", @user.bio)
-      
+
+      # Replace multiple occurrences
+      doc.replace("$birth_date", @user.birth_date, true)
+
       # Write the document back to a temporary file
       tmp_file = Tempfile.new('word_tempate', "#{Rails.root}/tmp")
       doc.commit(tmp_file.path)
