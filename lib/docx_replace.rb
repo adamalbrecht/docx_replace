@@ -11,6 +11,7 @@ module DocxReplace
     def initialize(path, temp_dir=nil)
       @zip_file = Zip::File.new(path)
       @temp_dir = temp_dir
+      @document_file_path = get_document_file_path()
       read_docx_file
     end
 
@@ -40,9 +41,20 @@ module DocxReplace
 
     private
     DOCUMENT_FILE_PATH = 'word/document.xml'
+    def get_document_file_path
+      content_types_entry = @zip_file.find_entry '[Content_Types].xml'
+      raise 'Not an Open XML Document' unless content_types_entry
+
+      content_types = content_types_entry.get_input_stream.read
+      if m = content_types.match(/word\/document\d*\.xml/)
+        @document_file_path = m[0]
+      else
+        raise 'Not a Word document'
+      end
+    end
 
     def read_docx_file
-      @document_content = @zip_file.read(DOCUMENT_FILE_PATH)
+      @document_content = @zip_file.read(@document_file_path)
     end
 
     def write_back_to_file(new_path=nil)
@@ -53,13 +65,13 @@ module DocxReplace
       end
       Zip::OutputStream.open(temp_file.path) do |zos|
         @zip_file.entries.each do |e|
-          unless e.name == DOCUMENT_FILE_PATH
+          unless e.name == @document_file_path
             zos.put_next_entry(e.name)
             zos.print e.get_input_stream.read
           end
         end
 
-        zos.put_next_entry(DOCUMENT_FILE_PATH)
+        zos.put_next_entry(@document_file_path)
         zos.print @document_content
       end
 
