@@ -8,11 +8,29 @@ describe DocxReplace::Doc do
 
   it "replaces a single variable in a very basic document" do
     doc = described_class.new(get_fixture("basic.docx"))
-    doc.replace("$foobar$", "hello world")
+    doc.replace("FOOBAR", "hello world")
     doc.commit(output_file)
 
     expect(output_text).to match(/hello world/)
-    expect(output_text).not_to match(/\$foobar\$/)
+    expect(output_text).not_to match(/FOOBAR/)
+  end
+
+  it "can replace multiple occurrences of the same variable" do
+    doc = described_class.new(get_fixture("multiple.docx"))
+    doc.replace("FOOBAR", "hello world", true)
+    doc.commit(output_file)
+
+    expect(output_text).not_to match(/FOOBAR/)
+    expect(output_text.scan("hello world").size).to eq(2)
+  end
+
+  it "does not replace multiple occurrences unless instructed to do so" do
+    doc = described_class.new(get_fixture("multiple.docx"))
+    doc.replace("FOOBAR", "hello world", false)
+    doc.commit(output_file)
+
+    expect(output_text.scan("FOOBAR").size).to eq(1)
+    expect(output_text.scan("hello world").size).to eq(1)
   end
 
   private
