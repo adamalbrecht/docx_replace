@@ -8,11 +8,13 @@ describe DocxReplace::Doc do
 
   it "replaces a single variable in a very basic document" do
     doc = described_class.new(get_fixture("basic.docx"))
-    doc.replace("$foobar$", "hello world")
+    doc.replace("FOOBAR", "hello world")
     doc.commit(output_file)
 
     expect(output_text).to match(/hello world/)
-    expect(output_text).not_to match(/\$foobar\$/)
+    expect(output_text).not_to match(/FOOBAR/)
+  end
+
   end
 
   private

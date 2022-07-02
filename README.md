@@ -32,15 +32,15 @@ def user_report
       doc = DocxReplace::Doc.new("#{Rails.root}/lib/docx_templates/my_template.docx", "#{Rails.root}/tmp")
 
       # Replace some variables. $var$ convention is used here, but not required.
-      doc.replace("$first_name$", @user.first_name)
-      doc.replace("$last_name$", @user.last_name)
-      doc.replace("$user_bio$", @user.bio)
+      doc.replace("FIRSTNAME", @user.first_name)
+      doc.replace("LASTNAME", @user.last_name)
+      doc.replace("USERBIO", @user.bio)
 
       # Replace multiple occurrences
-      doc.replace("$birth_date", @user.birth_date, true)
+      doc.replace("BIRTHDATE", @user.birth_date, true)
 
       # Write the document back to a temporary file
-      tmp_file = Tempfile.new('word_tempate', "#{Rails.root}/tmp")
+      tmp_file = Tempfile.new('word_template', "#{Rails.root}/tmp")
       doc.commit(tmp_file.path)
 
       # Respond to the request by sending the temp file
@@ -49,6 +49,8 @@ def user_report
   end
 end
 ```
+
+**Note:** Word sometimes wraps characters in XML tags, causing the replacement to not work. I recommend not using any special characters in your variable names.
 
 
 ## Contributing
