@@ -15,6 +15,22 @@ describe DocxReplace::Doc do
     expect(output_text).not_to match(/FOOBAR/)
   end
 
+  it "can replace multiple occurrences of the same variable" do
+    doc = described_class.new(get_fixture("multiple.docx"))
+    doc.replace("FOOBAR", "hello world", true)
+    doc.commit(output_file)
+
+    expect(output_text).not_to match(/FOOBAR/)
+    expect(output_text.scan("hello world").size).to eq(2)
+  end
+
+  it "does not replace multiple occurrences unless instructed to do so" do
+    doc = described_class.new(get_fixture("multiple.docx"))
+    doc.replace("FOOBAR", "hello world", false)
+    doc.commit(output_file)
+
+    expect(output_text.scan("FOOBAR").size).to eq(1)
+    expect(output_text.scan("hello world").size).to eq(1)
   end
 
   private
