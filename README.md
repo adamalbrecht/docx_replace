@@ -23,6 +23,9 @@ Or install it yourself as:
 Inside of a rails controller, your code might look something like this (although I would recommend extracting most of this into a separate class):
 
 ```ruby
+require "zip"
+require "docx_replace"
+
 def user_report
   @user = User.find(params[:user_id])
 
