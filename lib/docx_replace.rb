@@ -6,7 +6,7 @@ require 'tempfile'
 
 module DocxReplace
   class Doc
-    attr_reader :document_contents
+    attr_reader :document_content
 
     def initialize(path, temp_dir=nil)
       @zip_file = Zip::File.new(path)
@@ -17,7 +17,7 @@ module DocxReplace
 
     def replace(pattern, replacement, multiple_occurrences=false)
       replace = replacement.to_s.encode(xml: :text)
-      @document_contents.each do |path, document|
+      @document_content.each do |path, document|
         if multiple_occurrences
           document.force_encoding("UTF-8").gsub!(pattern, replace)
         else
@@ -27,7 +27,7 @@ module DocxReplace
     end
 
     def matches(pattern)
-      @document_contents.values.join.scan(pattern).map{|match| match.first}
+      @document_content.values.join.scan(pattern).map{|match| match.first}
     end
 
     def unique_matches(pattern)
@@ -50,9 +50,9 @@ module DocxReplace
     end
 
     def read_docx_files
-      @document_contents = {}
+      @document_content = {}
       @document_file_paths.each do |path|
-        @document_contents[path] = @zip_file.read(path)
+        @document_content[path] = @zip_file.read(path)
       end
     end
 
@@ -71,7 +71,7 @@ module DocxReplace
           end
         end
 
-        @document_contents.each do |path, document|
+        @document_content.each do |path, document|
           zos.put_next_entry(path)
           zos.print document
         end
