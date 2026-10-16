@@ -70,7 +70,7 @@ module DocxReplace
         path = new_path
       end
       FileUtils.mv(temp_file.path, path)
-      @zip_file = Zip::File.new(path, true)
+      @zip_file = Zip::File.new(path)
     end
   end
 end
