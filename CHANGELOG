@@ -1,3 +1,9 @@
+## v2.0.0
+
+* Set required Ruby to be at minimum Ruby 4.0
+* Update Rubyzip runtime dependency to be greater than 3.4
+* Added specs where simplecov found testing gaps
+
 ## v1.0.0
 
 * Initial Release
